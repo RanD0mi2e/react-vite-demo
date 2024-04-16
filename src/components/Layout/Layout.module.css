@@ -1,0 +1,43 @@
+.main {
+  position: relative;
+  height: calc(100% - 50px);
+}
+
+.header {
+  height: 50px;
+}
+
+.sideBar {
+  position: absolute;
+  width: 200px;
+  height: 100%;
+  background-color: rgb(113, 113, 204);
+  transform: translateX(0);
+  transition: transform .3s ease-out;
+}
+
+.main_contain {
+  height: 100%;
+  margin-left: 200px;
+  transition: margin 0.3s ease-out;
+}
+
+@media screen and (max-width: 960px) {
+  .header {
+    height: 50px;
+    background-color: pink;
+  }
+}
+
+@media screen and (max-width: 960px) {
+  .sideBar {
+    position: absolute;
+    transform: translateX(-200px);
+    transition: transform .3s ease-out;
+  }
+
+  .main_contain {
+    margin: 0;
+    transition: margin 0.3s ease-out;
+  }
+}
