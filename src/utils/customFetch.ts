@@ -69,7 +69,7 @@ class Fetch {
     return fetch(newConfig.url, {...newConfig, body, signal}).then(resp => {
       clearTimeout(timeoutId)
       // 响应拦截
-      return this.execResponseInterceptors(resp)
+      return this.execResponseInterceptors(resp).json()
     }).catch((err) => {
       console.error('setRequestErr:', err);
       if (err.name === 'AbortError') {
