@@ -1,23 +1,20 @@
 import { lazy } from "react";
-import { Navigate, createBrowserRouter } from "react-router-dom";
-import { NotFound } from "../pages/NotFound";
+import { Navigate, RouteObject } from "react-router-dom";
+import NotFound from "../pages/NotFound";
+import LazyLoadModule from "@/components/LazyLoadModule/LazyLoadModule";
 
-export const Router = createBrowserRouter([
+export const Router: RouteObject[] = [
   {
     path: "/admin",
     Component: lazy(() => import("../pages/admin/Admin")),
     children: [
       {
         path: "apiManage",
-        Component: lazy(() => import("../pages/admin/ApiManage")),
+        element: LazyLoadModule('/admin/ApiManage'),
       },
       {
         path: "menuManage",
-        Component: lazy(() => import("../pages/admin/MenuManege")),
-      },
-      {
-        path: "commonTools",
-        Component: lazy(() => import("../pages/admin/CommonTools")),
+        element: LazyLoadModule('/admin/MenuManege'),
       },
       {
         path: "",
@@ -26,7 +23,11 @@ export const Router = createBrowserRouter([
     ],
   },
   {
+    path: "/commonTools",
+    element: LazyLoadModule("/admin/CommonTools"),
+  },
+  {
     path: "*",
     Component: NotFound,
   },
-]);
+];

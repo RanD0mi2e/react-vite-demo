@@ -1,4 +1,4 @@
-import { Outlet } from "react-router-dom"
+import { Outlet } from "react-router-dom";
 
 const Admin = () => {
   return (
@@ -6,7 +6,7 @@ const Admin = () => {
       admin
       <Outlet />
     </div>
-  )
-}
+  );
+};
 
-export default Admin
+export default Admin;

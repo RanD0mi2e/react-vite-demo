@@ -1,15 +1,14 @@
 import {
-  RouterProvider,
+  RouterProvider, useRoutes,
 } from "react-router-dom";
-import { Layout } from "./components/Layout";
+import { Layout } from "./components/Layout/Layout";
 import { CounterProvider } from "./stores/counter/contexts/CounterContext";
 import { UserProvider } from "./stores/user/contexts/UserContext";
-import { getToken } from "./utils/token";
 import { Router } from "./router/permission";
 
-const router = Router
 
 export const App = () => {
+  const element = useRoutes(Router)
   // const token = getToken();
   // if
 
@@ -17,7 +16,7 @@ export const App = () => {
     <CounterProvider>
       <UserProvider>
         <Layout>
-          <RouterProvider router={router} />
+          {element}
         </Layout>
       </UserProvider>
     </CounterProvider>

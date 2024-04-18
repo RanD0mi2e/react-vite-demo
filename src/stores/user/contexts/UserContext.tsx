@@ -2,7 +2,6 @@ import {
   Dispatch,
   ReactNode,
   createContext,
-  useEffect,
   useReducer,
 } from "react";
 import { ActionType, userReducer } from "../reducers/userReducer";
@@ -14,8 +13,22 @@ export type UserInfo = {
     email: string;
     roles: unknown[];
   };
-  menu: unknown[];
+  menu: MenuType[];
   token: string;
+};
+
+export type MenuType = {
+  key: string;
+  lebel: string;
+  permissionType: string;
+  parentId: number;
+  level: number;
+  icon: string;
+  route: string;
+  routeFile: string;
+  path: string;
+  method: string;
+  children: MenuType[];
 };
 
 const initUserInfo: UserInfo = {
@@ -36,7 +49,6 @@ export const UserDispathContext = createContext<Dispatch<ActionType> | null>(
 
 export const UserProvider = ({ children }: { children: ReactNode }) => {
   const [userInfo, userInfoDispatch] = useReducer(userReducer, initUserInfo);
-
   return (
     <UserContext.Provider value={userInfo}>
       <UserDispathContext.Provider value={userInfoDispatch}>

@@ -9,6 +9,12 @@ type FetchConfig = {
   body?: unknown;
 };
 
+type ResponseJson = {
+  code: number
+  message: string
+  data: unknown
+}
+
 type RequestInterceptor = Interceptor<FetchConfig>;
 type ResponseInterceptor = Interceptor<Response>;
 
@@ -55,7 +61,7 @@ class Fetch {
   }
 
   // 发送请求
-  private sendRequest(config: FetchConfig): Promise<Response> {
+  private async sendRequest(config: FetchConfig): Promise<ResponseJson> {
     // 请求时间控制
     const controller = new AbortController()
     const signal = controller.signal
@@ -81,7 +87,7 @@ class Fetch {
   }
 
   // Get请求
-  get(url: string, params: Record<string, string>) {
+  get(url: string, params?: Record<string, string>) {
     let queryStr = ''
     if(params) {
       queryStr = new URLSearchParams(params).toString()
@@ -91,7 +97,7 @@ class Fetch {
     }
     const config: FetchConfig = {
       method: 'GET',
-      url: this.BASE_URL + queryStr
+      url: this.BASE_URL + url
     }
     return this.sendRequest(config)
   }
