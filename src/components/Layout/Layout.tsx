@@ -2,23 +2,29 @@ import { Header } from "./Header";
 import { MainContain } from "./MainContain";
 import { SideBar } from "./SideBar";
 import style from "./Layout.module.css";
-import { ReactNode, useContext, useEffect } from "react";
+import { useContext, useEffect } from "react";
 import { service } from "../../utils/customFetch";
-import { MenuType, UserContext, UserDispathContext } from "../../stores/user/contexts/UserContext";
+import {
+  MenuType,
+  UserContext,
+  UserDispathContext,
+} from "../../stores/user/contexts/UserContext";
+import { Outlet } from "react-router-dom";
 
-export const Layout = ({ children }: { children: ReactNode }) => {
-  const userInfo = useContext(UserContext)
-  const userDispatch = useContext(UserDispathContext)
+export const Layout = () => {
+  const userInfo = useContext(UserContext);
+  const userDispatch = useContext(UserDispathContext);
   useEffect(() => {
     // 获取菜单路由
-    service.get('/v1/getMenuTree').then(resp => {
-      const tree = (resp.data as MenuType).children
-      userDispatch && userDispatch({
-        type: "update userMenuTree",
-        menu: tree
-      })
-    })
-  }, [userDispatch])
+    service.get("/v1/getMenuTree").then((resp) => {
+      const tree = (resp.data as MenuType).children;
+      userDispatch &&
+        userDispatch({
+          type: "update userMenuTree",
+          menu: tree,
+        });
+    });
+  }, [userDispatch]);
 
   // 树组件的处理
 
@@ -28,7 +34,7 @@ export const Layout = ({ children }: { children: ReactNode }) => {
       <div className={style.main}>
         {userInfo && userInfo.menu.length && <SideBar />}
         <MainContain>
-          {children}
+          <Outlet />
         </MainContain>
       </div>
     </>

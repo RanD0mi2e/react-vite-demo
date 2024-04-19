@@ -2,7 +2,7 @@ import { useContext, useState } from "react";
 import style from "./Layout.module.css";
 import { MenuType, UserContext } from "../../stores/user/contexts/UserContext";
 import { Menu } from "antd";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 interface MenuInfo {
   key: string;
@@ -14,8 +14,7 @@ interface MenuInfo {
 
 export const SideBar = () => {
   const user = useContext(UserContext);
-  const defaultKey = (user && user.menu.length && user.menu[0].key) || "1";
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   // 菜单树转数组
   const convertMenuTreeToArr = (
@@ -30,18 +29,42 @@ export const SideBar = () => {
     });
     return arr;
   };
-  const [menuArr, setMenuArr] = useState(convertMenuTreeToArr(user && user.menu || [], []))
-  console.log(convertMenuTreeToArr(user && user.menu || [], []));
-  
 
-  const handleMenuOnClick = (e:MenuInfo) => {
-    const obj = menuArr.find(arr => {
-      return arr.key = e.key
-    })
-    if (obj) {
-      navigate(obj.route)
+  const [menuArr] = useState(
+    convertMenuTreeToArr((user && user.menu) || [], [])
+  );
+
+  const location = useLocation();
+  const [defaultSelectedKey] = useState(getCurrentMenu()?.key || "1");
+  const [defaultOpenKeys] = useState(getOpenKeys(defaultSelectedKey, menuArr));
+
+  // 获取当前路径对应菜单
+  function getCurrentMenu() {
+    const path = location.pathname;
+    return menuArr.find((menu) => menu.route == path);
+  }
+
+  // 或许多级菜单中需要展开的层级
+  function getOpenKeys(selectedKey: string, menus: MenuType[]) {
+    const arr: string[] = [];
+    let selectedObj = menus.find(menu => menu.key === selectedKey)
+    while (selectedObj?.parent_id) {
+      arr.push(selectedObj.parent_id)
+      const subSelectedObj = menus.find(menu => menu.key === selectedObj?.parent_id)
+      selectedObj = subSelectedObj
     }
-  };
+    return arr
+  }
+
+  // 点击菜单
+  function handleMenuOnClick(e: MenuInfo) {
+    const obj = menuArr.find((arr) => {
+      return arr.key == e.key;
+    });
+    if (obj) {
+      navigate(obj.route);
+    }
+  }
 
   return (
     <div className={style.sideBar}>
@@ -50,7 +73,8 @@ export const SideBar = () => {
           style={{ height: "100%" }}
           mode="inline"
           theme="dark"
-          defaultSelectedKeys={[defaultKey]}
+          defaultSelectedKeys={[defaultSelectedKey]}
+          defaultOpenKeys={defaultOpenKeys}
           onClick={handleMenuOnClick}
           items={user.menu}
         />

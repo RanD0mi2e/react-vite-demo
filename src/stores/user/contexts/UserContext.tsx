@@ -20,12 +20,12 @@ export type UserInfo = {
 export type MenuType = {
   key: string;
   lebel: string;
-  permissionType: string;
-  parentId: number;
+  permission_type: string;
+  parent_id: string;
   level: number;
   icon: string;
   route: string;
-  routeFile: string;
+  route_file: string;
   path: string;
   method: string;
   children: MenuType[];

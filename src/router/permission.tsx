@@ -1,33 +1,47 @@
-import { lazy } from "react";
-import { Navigate, RouteObject } from "react-router-dom";
+import { Navigate, createBrowserRouter } from "react-router-dom";
 import NotFound from "../pages/NotFound";
 import LazyLoadModule from "@/components/LazyLoadModule/LazyLoadModule";
+import { Layout } from "@/components/Layout/Layout";
 
-export const Router: RouteObject[] = [
+export const Router = createBrowserRouter([
   {
-    path: "/admin",
-    Component: lazy(() => import("../pages/admin/Admin")),
+    path: '/',
+    Component: Layout,
     children: [
       {
-        path: "apiManage",
-        element: LazyLoadModule('/admin/ApiManage'),
+        path: "admin",
+        element: LazyLoadModule('/admin/Admin'),
+        children: [
+          {
+            path: "apiManage",
+            element: LazyLoadModule('/admin/ApiManage'),
+          },
+          {
+            path: "menuManage",
+            element: LazyLoadModule('/admin/MenuManege'),
+          },
+          {
+            path: "",
+            element: <Navigate to="MenuManege" />,
+          },
+        ],
       },
       {
-        path: "menuManage",
-        element: LazyLoadModule('/admin/MenuManege'),
+        path: '/voice',
+        element: LazyLoadModule('/voice/Voice')
       },
       {
-        path: "",
-        element: <Navigate to="apiManage" />,
+        path: '/dashboard',
+        element: LazyLoadModule('/dashboard/Dashboard')
       },
-    ],
+      {
+        path: "/commonTools",
+        element: LazyLoadModule("/admin/CommonTools"),
+      },
+      {
+        path: "*",
+        Component: NotFound,
+      },
+    ]
   },
-  {
-    path: "/commonTools",
-    element: LazyLoadModule("/admin/CommonTools"),
-  },
-  {
-    path: "*",
-    Component: NotFound,
-  },
-];
+]);

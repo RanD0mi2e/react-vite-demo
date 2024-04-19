@@ -2,12 +2,14 @@ import { Skeleton } from "antd";
 import { Suspense, lazy } from "react";
 
 const LazyLoadModule = (url: string) => {
+  console.log(url);
+  
   const Module = lazy(() => {
     return new Promise((resolve) => {
-      import("@/pages" + url)
+      import("../../pages" + url)
         .then((res) => resolve(res))
         .catch((err) => {
-          resolve(import('@/pages' + '/NotFound'));
+          resolve(import('../../pages' + '/NotFound'));
           console.log(err);
         });
     });
