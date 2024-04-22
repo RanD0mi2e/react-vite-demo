@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState} from "react";
 import style from "./Layout.module.css";
 import { MenuType, UserContext } from "../../stores/user/contexts/UserContext";
 import { Menu } from "antd";
@@ -24,19 +24,31 @@ export const SideBar = () => {
     tree.forEach((item) => {
       arr.push(item);
       if (item.children && item.children.length) {
-        arr = [...arr, ...convertMenuTreeToArr(item.children, arr)];
+        arr = convertMenuTreeToArr(item.children, arr)
       }
     });
     return arr;
   };
 
-  const [menuArr] = useState(
-    convertMenuTreeToArr((user && user.menu) || [], [])
-  );
 
   const location = useLocation();
-  const [defaultSelectedKey] = useState(getCurrentMenu()?.key || "1");
-  const [defaultOpenKeys] = useState(getOpenKeys(defaultSelectedKey, menuArr));
+  const [selectedKey,setSelectedKey] = useState("1");
+  const [openKeys,setOpenKeys] = useState([""]);
+  const menuArr = convertMenuTreeToArr((user && user.menu) || [], [])
+
+
+  useEffect(() => {
+    if (typeof getCurrentMenu === "function") {
+      const curMenu = getCurrentMenu()
+      if (curMenu !== undefined) {
+        setSelectedKey(() => curMenu.key)
+      }
+    }
+  }, [user]);
+
+  useEffect(() => {
+    setOpenKeys(() => getOpenKeys(selectedKey, menuArr))
+  }, [selectedKey]);
 
   // 获取当前路径对应菜单
   function getCurrentMenu() {
@@ -48,10 +60,9 @@ export const SideBar = () => {
   function getOpenKeys(selectedKey: string, menus: MenuType[]) {
     const arr: string[] = [];
     let selectedObj = menus.find(menu => menu.key === selectedKey)
-    while (selectedObj?.parent_id) {
+    while (selectedObj?.parent_id && selectedObj?.parent_id !== "0") {
       arr.push(selectedObj.parent_id)
-      const subSelectedObj = menus.find(menu => menu.key === selectedObj?.parent_id)
-      selectedObj = subSelectedObj
+      selectedObj = menus.find(menu => menu.key === selectedObj?.parent_id)
     }
     return arr
   }
@@ -61,7 +72,9 @@ export const SideBar = () => {
     const obj = menuArr.find((arr) => {
       return arr.key == e.key;
     });
+    console.log(obj)
     if (obj) {
+      setSelectedKey(obj.key)
       navigate(obj.route);
     }
   }
@@ -73,8 +86,8 @@ export const SideBar = () => {
           style={{ height: "100%" }}
           mode="inline"
           theme="dark"
-          defaultSelectedKeys={[defaultSelectedKey]}
-          defaultOpenKeys={defaultOpenKeys}
+          selectedKeys={[selectedKey]}
+          defaultOpenKeys={openKeys}
           onClick={handleMenuOnClick}
           items={user.menu}
         />
