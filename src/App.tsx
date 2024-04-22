@@ -7,7 +7,7 @@ import { Router } from "./router/permission";
 
 
 export const App = () => {
-  const router = Router
+  const router   = Router
   // const token = getToken();
   // if
 

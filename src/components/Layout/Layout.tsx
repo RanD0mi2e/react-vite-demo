@@ -1,42 +1,46 @@
-import { Header } from "./Header";
-import { MainContain } from "./MainContain";
-import { SideBar } from "./SideBar";
 import style from "./Layout.module.css";
-import { useContext, useEffect } from "react";
-import { service } from "../../utils/customFetch";
+import {Header} from "./Header";
+import {MainContain} from "./MainContain";
+import {SideBar} from "./SideBar";
+import {useContext, useEffect} from "react";
 import {
-  MenuType,
-  UserContext,
-  UserDispathContext,
+    MenuType,
+    UserDispathContext,
 } from "../../stores/user/contexts/UserContext";
-import { Outlet } from "react-router-dom";
+import {Outlet} from "react-router-dom";
+import {getMenuTree} from "@/api/user.ts";
+import {UserActionTypes} from "@/stores/user/reducers/userReducer.ts";
 
 export const Layout = () => {
-  const userInfo = useContext(UserContext);
-  const userDispatch = useContext(UserDispathContext);
-  useEffect(() => {
-    // 获取菜单路由
-    service.get("/v1/getMenuTree").then((resp) => {
-      const tree = (resp.data as MenuType).children;
-      userDispatch &&
-        userDispatch({
-          type: "update userMenuTree",
-          menu: tree,
-        });
-    });
-  }, [userDispatch]);
+    const userDispatch = useContext(UserDispathContext);
+    useEffect(() => {
+        // 获取菜单路由
+        getMenuTree().then((resp) => {
+            if (resp.code === 0) {
 
-  // 树组件的处理
+                const tree = resp.data as MenuType[]
+                console.log(tree)
+                if (userDispatch && tree.length) {
+                    userDispatch({
+                        type: UserActionTypes.UPDATE_USER_MENU,
+                        menu: tree
+                    })
+                }
+            }
+        })
+    }, [userDispatch]);
 
-  return (
-    <>
-      <Header />
-      <div className={style.main}>
-        {userInfo && userInfo.menu.length && <SideBar />}
-        <MainContain>
-          <Outlet />
-        </MainContain>
-      </div>
-    </>
-  );
+    // 树组件的处理
+
+    return (
+        <>
+            <Header/>
+            <div className={style.main}>
+                <SideBar/>
+                <MainContain>
+                    <Outlet/>
+                </MainContain>
+            </div>
+        </>
+    );
 };
