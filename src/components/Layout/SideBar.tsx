@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState} from "react";
+import React, { useContext} from "react";
 import style from "./Layout.module.css";
 import { MenuType, UserContext } from "../../stores/user/contexts/UserContext";
 import { Menu } from "antd";
@@ -32,23 +32,9 @@ export const SideBar = () => {
 
 
   const location = useLocation();
-  const [selectedKey,setSelectedKey] = useState("1");
-  const [openKeys,setOpenKeys] = useState([""]);
   const menuArr = convertMenuTreeToArr((user && user.menu) || [], [])
-
-
-  useEffect(() => {
-    if (typeof getCurrentMenu === "function") {
-      const curMenu = getCurrentMenu()
-      if (curMenu !== undefined) {
-        setSelectedKey(() => curMenu.key)
-      }
-    }
-  }, [user]);
-
-  useEffect(() => {
-    setOpenKeys(() => getOpenKeys(selectedKey, menuArr))
-  }, [selectedKey]);
+  const defaultSelectedKey = getCurrentMenu()?.key || "1";
+  const defaultOpenKeys = getOpenKeys(defaultSelectedKey, menuArr)
 
   // 获取当前路径对应菜单
   function getCurrentMenu() {
@@ -74,7 +60,6 @@ export const SideBar = () => {
     });
     console.log(obj)
     if (obj) {
-      setSelectedKey(obj.key)
       navigate(obj.route);
     }
   }
@@ -86,8 +71,8 @@ export const SideBar = () => {
           style={{ height: "100%" }}
           mode="inline"
           theme="dark"
-          selectedKeys={[selectedKey]}
-          defaultOpenKeys={openKeys}
+          defaultSelectedKeys={[defaultSelectedKey]}
+          defaultOpenKeys={defaultOpenKeys}
           onClick={handleMenuOnClick}
           items={user.menu}
         />
