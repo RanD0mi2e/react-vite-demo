@@ -2,9 +2,13 @@ import {
   Dispatch,
   ReactNode,
   createContext,
+  useEffect,
   useReducer,
+  useState,
 } from "react";
-import { ActionType, userReducer } from "../reducers/userReducer";
+import { ActionType, UserActionTypes, userReducer } from "../reducers/userReducer";
+import { getMenuTree } from "@/api/user";
+import { MenuStruct } from "@/types/api/user";
 
 export type UserInfo = {
   baseInfo: {
@@ -17,19 +21,7 @@ export type UserInfo = {
   token: string;
 };
 
-export type MenuType = {
-  key: string;
-  lebel: string;
-  permission_type: string;
-  parent_id: string;
-  level: number;
-  icon: string;
-  route: string;
-  route_file: string;
-  path: string;
-  method: string;
-  children: MenuType[];
-};
+export type MenuType = Omit<MenuStruct, 'label' | 'deleted_at'>
 
 const initUserInfo: UserInfo = {
   baseInfo: {
@@ -48,12 +40,41 @@ export const UserDispathContext = createContext<Dispatch<ActionType> | null>(
 );
 
 export const UserProvider = ({ children }: { children: ReactNode }) => {
+  const [isShow, setIsShow] = useState(false)
   const [userInfo, userInfoDispatch] = useReducer(userReducer, initUserInfo);
-  return (
-    <UserContext.Provider value={userInfo}>
-      <UserDispathContext.Provider value={userInfoDispatch}>
-        {children}
-      </UserDispathContext.Provider>
-    </UserContext.Provider>
-  );
+
+  async function fetchUserMenu() {
+    try {
+      const { code, data, message } = await getMenuTree();
+      if (code === 0) {
+        userInfoDispatch({
+          type: UserActionTypes.UPDATE_USER_MENU,
+          menu: data,
+        });
+        setIsShow(true)
+      } else {
+        throw new Error(message);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  }
+  useEffect(() => {
+    fetchUserMenu();
+  }, []);
+
+  if (!isShow) {
+    return (
+      <div>Loading...</div>
+    )
+  } else {
+    return (
+      <UserContext.Provider value={userInfo}>
+        <UserDispathContext.Provider value={userInfoDispatch}>
+          {children}
+        </UserDispathContext.Provider>
+      </UserContext.Provider>
+    );
+  }
+
 };

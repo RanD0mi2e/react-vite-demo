@@ -1,4 +1,4 @@
-import React, { useContext} from "react";
+import React, { useContext } from "react";
 import style from "./Layout.module.css";
 import { MenuType, UserContext } from "../../stores/user/contexts/UserContext";
 import { Menu } from "antd";
@@ -24,17 +24,16 @@ export const SideBar = () => {
     tree.forEach((item) => {
       arr.push(item);
       if (item.children && item.children.length) {
-        arr = convertMenuTreeToArr(item.children, arr)
+        arr = convertMenuTreeToArr(item.children, arr);
       }
     });
     return arr;
   };
 
-
   const location = useLocation();
-  const menuArr = convertMenuTreeToArr((user && user.menu) || [], [])
+  const menuArr = convertMenuTreeToArr((user && user.menu) || [], []);
   const defaultSelectedKey = getCurrentMenu()?.key || "1";
-  const defaultOpenKeys = getOpenKeys(defaultSelectedKey, menuArr)
+  const defaultOpenKeys = getOpenKeys(defaultSelectedKey, menuArr);
 
   // 获取当前路径对应菜单
   function getCurrentMenu() {
@@ -45,12 +44,12 @@ export const SideBar = () => {
   // 或许多级菜单中需要展开的层级
   function getOpenKeys(selectedKey: string, menus: MenuType[]) {
     const arr: string[] = [];
-    let selectedObj = menus.find(menu => menu.key === selectedKey)
+    let selectedObj = menus.find((menu) => menu.key === selectedKey);
     while (selectedObj?.parent_id && selectedObj?.parent_id !== "0") {
-      arr.push(selectedObj.parent_id)
-      selectedObj = menus.find(menu => menu.key === selectedObj?.parent_id)
+      arr.push(selectedObj.parent_id);
+      selectedObj = menus.find((menu) => menu.key === selectedObj?.parent_id);
     }
-    return arr
+    return arr;
   }
 
   // 点击菜单
@@ -58,7 +57,7 @@ export const SideBar = () => {
     const obj = menuArr.find((arr) => {
       return arr.key == e.key;
     });
-    console.log(obj)
+    console.log(obj);
     if (obj) {
       navigate(obj.route);
     }
@@ -66,17 +65,15 @@ export const SideBar = () => {
 
   return (
     <div className={style.sideBar}>
-      {user && user.menu.length && (
-        <Menu
-          style={{ height: "100%" }}
-          mode="inline"
-          theme="dark"
-          defaultSelectedKeys={[defaultSelectedKey]}
-          defaultOpenKeys={defaultOpenKeys}
-          onClick={handleMenuOnClick}
-          items={user.menu}
-        />
-      )}
+      <Menu
+        style={{ height: "100%" }}
+        mode="inline"
+        theme="dark"
+        defaultSelectedKeys={[defaultSelectedKey]}
+        defaultOpenKeys={defaultOpenKeys}
+        onClick={handleMenuOnClick}
+        items={user && user.menu || []}
+      />
     </div>
   );
 };
