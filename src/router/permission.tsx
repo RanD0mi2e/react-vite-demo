@@ -1,42 +1,17 @@
-import { Navigate, createBrowserRouter } from "react-router-dom";
+import { createBrowserRouter } from "react-router-dom";
 import NotFound from "../pages/NotFound";
 import LazyLoadModule from "@/components/LazyLoadModule/LazyLoadModule";
 import { Layout } from "@/components/Layout/Layout";
 
+// 默认路由
 export const Router = createBrowserRouter([
   {
     path: '/',
     Component: Layout,
     children: [
       {
-        path: "admin",
-        element: LazyLoadModule('/admin/Admin'),
-        children: [
-          {
-            path: "apiManage",
-            element: LazyLoadModule('/admin/ApiManage'),
-          },
-          {
-            path: "menuManage",
-            element: LazyLoadModule('/admin/MenuManege'),
-          },
-          {
-            path: "",
-            element: <Navigate to="MenuManege" />,
-          },
-        ],
-      },
-      {
-        path: '/voice',
-        element: LazyLoadModule('/voice/Voice')
-      },
-      {
         path: '/dashboard',
         element: LazyLoadModule('/dashboard/Dashboard')
-      },
-      {
-        path: "/commonTools",
-        element: LazyLoadModule("/admin/CommonTools"),
       },
       {
         path: "*",
@@ -45,3 +20,5 @@ export const Router = createBrowserRouter([
     ]
   },
 ]);
+
+// 动态添加路由
