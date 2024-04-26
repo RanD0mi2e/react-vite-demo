@@ -72,7 +72,7 @@ export const SideBar = () => {
         defaultSelectedKeys={[defaultSelectedKey]}
         defaultOpenKeys={defaultOpenKeys}
         onClick={handleMenuOnClick}
-        items={user && user.menu || []}
+        items={(user && user.menu) || []}
       />
     </div>
   );

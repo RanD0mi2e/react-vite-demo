@@ -1,21 +1,18 @@
-import {
-  RouterProvider,
-} from "react-router-dom";
-import { CounterProvider } from "./stores/counter/contexts/CounterContext";
-import { UserProvider } from "./stores/user/contexts/UserContext";
-import { Router } from "./router/permission";
-
+import { RouterProvider, createBrowserRouter } from "react-router-dom";
+import { Routes } from "./router/permission";
+import { useContext } from "react";
+import { UserContext } from "./stores/user/contexts/UserContext";
+import { addRoutes } from "./router/routerHelpers";
 
 export const App = () => {
-  const router   = Router
-  // const token = getToken();
-  // if
-
-  return (
-    <CounterProvider>
-      <UserProvider>
-        <RouterProvider router={router} />
-      </UserProvider>
-    </CounterProvider>
-  );
+  const routes = Routes;
+  const user = useContext(UserContext)
+  if(user?.menu) {
+    const matchObj = routes.find(route => route.path === '/')
+    if(matchObj && matchObj.children) {
+      matchObj.children = matchObj.children.concat(addRoutes(user.menu))
+    }
+  }
+  const router = createBrowserRouter(routes)
+  return <RouterProvider router={router} />;
 };
