@@ -16,6 +16,13 @@
   transition: transform .3s ease-out;
 }
 
+.pending_sideBar {
+  height: 100%;
+  width: 200px;
+  position: absolute;
+  background-color: #001529;
+}
+
 .main_contain {
   height: 100%;
   margin-left: 200px;

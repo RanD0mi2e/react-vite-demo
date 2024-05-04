@@ -2,21 +2,29 @@ import LazyLoadModule from "@/components/LazyLoadModule/LazyLoadModule"
 import { MenuType } from "@/stores/user/contexts/UserContext"
 import { RouteObject } from "react-router-dom"
 
-type MenuObj = RouteObject
-
 // 动态添加路由
-export const addRoutes = (menus: MenuType[]) => {
-  let temp: MenuObj[] = []
+export const addRoutes = (defaultRoutes: RouteObject[], routes: RouteObject[]) => {
+  const rootRoute = defaultRoutes.find(route => route.path === '/')
+  if (rootRoute && rootRoute.children) {
+    rootRoute.children = [...rootRoute.children, ...routes]
+  }
+  return defaultRoutes
+}
+
+export const filterRoutes = (menus: MenuType[]) => {
+  const temp: RouteObject[] = []
   menus.forEach(menu => {
-    const path = menu.route
+    const pathArr = menu.route.split('/')
+    const path = pathArr[menu.level]
     const element = LazyLoadModule(menu.route_file)
     temp.push({
       path,
       element
     })
     if (menu.children) {
-      const result = addRoutes(menu.children)
-      temp = temp.concat(result)
+      // const result = addRoutes(menu.children)
+      // temp = temp.concat(result)
+      temp[temp.length - 1].children = filterRoutes(menu.children)
     }
   })
   return temp

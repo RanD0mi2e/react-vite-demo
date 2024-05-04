@@ -11,10 +11,7 @@ export type routesAction = {
 const routesReducer: Reducer<routesState, routesAction> = (state, action) => {
     // 插入权限路由
     if (action.type === 'dispatch') {
-        const idx = state.findIndex((route) => route.path === '/')
-        if (idx !== -1 && state[idx] && state[idx].children) {
-            state[idx].children = action.data.routes
-        }
+        state = action.data.routes
     }
     // 替换整个路由
     else if (action.type === 'replace') {

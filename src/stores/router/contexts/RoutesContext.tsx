@@ -1,6 +1,6 @@
 import {createContext, Dispatch, ReactNode, useReducer} from "react";
 import {RouteObject} from "react-router-dom";
-import {Routes} from "@/router/permission.tsx";
+import {Routes} from "@/router";
 import routesReducer, {routesAction} from "@/stores/router/reducers/routesReducer.ts";
 
 export const RoutesContext = createContext<RouteObject[]>([]);
