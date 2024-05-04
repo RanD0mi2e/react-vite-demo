@@ -1,6 +1,11 @@
+import {Outlet} from "react-router-dom";
+
 const Demo = () => {
   return (
-    <div>Demo</div>
+    <div>
+      Demo
+      <Outlet />
+    </div>
   )
 }
 export default Demo
