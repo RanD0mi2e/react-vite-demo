@@ -1,24 +1,19 @@
-import { ReactNode } from "react";
+import {ReactNode} from "react";
 import style from "./Layout.module.css";
-import { BasicObserver, BasicSubject } from "@/utils/observer";
+import {provide} from "@/components/worker/workerObserver.ts";
 
-export const MainContain = ({ children }: { children: ReactNode }) => {
-  const provide = new BasicSubject<number>(0)
-  const consumer = new BasicObserver<number>("no.2", (value) => {
-    console.log(value);
-  })
-  provide.register(consumer)
+export const MainContain = ({children}: { children: ReactNode }) => {
 
-  const handleClickToUpdate = () => {
-    provide.value = provide.value++
-  }
+    const handleClickToUpdate = () => {
+        provide.value+=1
+    }
 
-  return (
-    <div className={style.main_contain}>
-      {children}
-      <div>
-        <button onClick={handleClickToUpdate}>更新</button>
-      </div>
-    </div>
-  );
+    return (
+        <div className={style.main_contain}>
+            {children}
+            <div>
+                <button onClick={handleClickToUpdate}>更新</button>
+            </div>
+        </div>
+    );
 };

@@ -11,23 +11,23 @@ interface Subject<T> {
   deRegister: (observer: Observer<T>) => void;
 }
 
-export type BasicObserverCallback<U> = (param: U) => void
 // 观察者基类
 export class BasicObserver<T> implements Observer<T> {
   id: string;
-  value: T | BasicObserverCallback<T>;
+  value: T;
+  callback?: (value: T) => void; // 可选的回调函数
 
-  constructor(id: string, value: T | BasicObserverCallback<T>) {
+  constructor(id: string, value: T, callback?: (value: T) => void) {
     this.id = id;
     this.value = value;
+    this.callback = callback;
   }
 
   update(value: T) {
-    // 如果观察者接收的是回调函数，则执行回调；如果接收是普通值，那就执行赋值
-    if(typeof this.value === "function") {
-      (this.value as BasicObserverCallback<T>)(value)
-    } else {
-      this.value = value;
+    // 更新值并执行回调函数
+    this.value = value
+    if(this.callback) {
+      this.callback(value);
     }
   }
 }
@@ -46,7 +46,6 @@ export class BasicSubject<T> implements Subject<T> {
   }
 
   set value(value: T) {
-    debugger
     this._value = value;
     this.notify();
   }
