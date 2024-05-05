@@ -67,3 +67,27 @@ export class BasicSubject<T> implements Subject<T> {
     }
   }
 }
+
+// 提供订阅/发布api的公共类
+export class BehaviorSubject<T> {
+  subject: BasicSubject<T>;
+
+  constructor(value: T) {
+    this.subject = new BasicSubject<T>(value);
+  }
+
+  subscribe(id: string, value: T, callback?: (value: T) => void) {
+    const obs = new BasicObserver<T>(id, value, callback)
+    this.subject.register(obs)
+    // 订阅函数会被立即执行一次
+    this.subject.value = value
+  }
+
+  next(value: T) {
+    this.subject.value = value;
+  }
+
+  getValue() {
+    return this.subject.value
+  }
+}

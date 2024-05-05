@@ -1,11 +1,11 @@
 import {ReactNode} from "react";
 import style from "./Layout.module.css";
-import {provide} from "@/components/worker/workerObserver.ts";
+import {bs} from "@/components/worker/workerObserver.ts";
 
 export const MainContain = ({children}: { children: ReactNode }) => {
 
     const handleClickToUpdate = () => {
-        provide.value+=1
+        bs.next(bs.getValue() + 1)
     }
 
     return (
