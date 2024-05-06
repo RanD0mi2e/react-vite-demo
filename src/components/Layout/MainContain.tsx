@@ -1,6 +1,6 @@
 import {ReactNode} from "react";
 import style from "./Layout.module.css";
-import {bs} from "@/components/worker/workerObserver.ts";
+import {bs} from "@/utils/worker/workerObserver";
 
 export const MainContain = ({children}: { children: ReactNode }) => {
 

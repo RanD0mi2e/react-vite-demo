@@ -62,9 +62,9 @@ export abstract class WorkerPool {
                 if (count < this.maxWorkerCount && workerParams.length !== 0) {
                     // 线程池空闲线程数
                     let curTaskCount = this.maxWorkerCount - count
-                    // 首次执行时，分片数量小于空闲线程数，根据分片数量分配空闲线程
-                    if (curTaskCount > params.length) {
-                        curTaskCount = params.length
+                    // 分片数量小于空闲线程数，根据分片数量分配空闲线程
+                    if (curTaskCount > workerParams.length) {
+                        curTaskCount = workerParams.length
                     }
                     // 空闲线程数组
                     const canUseWorker: WorkerWrapper[] = []

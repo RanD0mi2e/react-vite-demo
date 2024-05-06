@@ -25,8 +25,6 @@ const App = () => {
                 userInfoDispatch({
                     type: UserActionTypes.UPDATE_USER_MENU,
                     menu: data,
-
-
                 });
             } else {
                 throw new Error(message);

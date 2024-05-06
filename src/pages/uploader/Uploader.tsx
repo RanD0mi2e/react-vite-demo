@@ -1,22 +1,55 @@
-import { ChangeEvent } from "react";
+import { PromisePool } from "@/utils/promise-pool/promisePool";
+import { getArrayBufFromFile } from "@/utils/uploaderHelpers";
+import { WorkerService } from "@/utils/worker/worker.service";
+import { ChangeEvent, useRef, useState } from "react";
 
 const Uploader = () => {
+  const workerSrv = useRef(new WorkerService());
 
-  const handleFileUpload = (e: ChangeEvent<HTMLInputElement>) => {
-    console.log(e.target.files);
-    const file = e.target.files && e.target.files[0]
-    const fileReader = new FileReader()
-    if (file) {
-      fileReader.readAsArrayBuffer(file)
+  const handleFileUpload = async (e: ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      const aFile = e.target.files[0];
+      console.log(aFile);
+      // 大文件切片
+      console.time("slice file");
+      const arrbufs = await getArrayBufFromFile(aFile);
+      console.timeEnd("slice file");
+      // 获取大文件md5
+      console.time("calculate hash");
+      const fileHash = await workerSrv.current.getMD5ForFiles(arrbufs);
+      console.timeEnd("calculate hash");
     }
-    fileReader.onload = e => {
-      console.log(e.target?.result as ArrayBuffer);
-    }
+  };
+
+  function testPromisePool() {
+    const arr = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+    const asyncFns = arr.map((num) => async () => {
+      console.log("跑起来了" + num);
+      await new Promise<number>((rs) => {
+        setTimeout(() => {
+          rs(num * 2);
+        }, 200);
+      });
+
+      return new Promise((rs) => {
+        setTimeout(() => {
+          rs("结果：" + num * 10);
+        }, 200);
+      });
+    });
+
+    const pool = new PromisePool(asyncFns, 4)
+    pool.exec<string>().then(res => {
+      console.log(res);
+    })
   }
 
   return (
-    <input type="file" onChange={handleFileUpload}  />
-  )
-}
+    <>
+      <input type="file" onChange={handleFileUpload} />
+      <button onClick={testPromisePool}>测试promise线程池</button>
+    </>
+  );
+};
 
-export default Uploader
+export default Uploader;
