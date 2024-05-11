@@ -47,6 +47,4 @@ export const UserProvider = ({children}: { children: ReactNode }) => {
             </UserDispathContext.Provider>
         </UserContext.Provider>
     );
-
-
 };

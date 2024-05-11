@@ -1,5 +1,10 @@
 import SparkMD5 from "spark-md5";
 
+export const DEFAULT_UPLOADER_CONFIG = {
+  chunkSize: 5, // 分片大小/mb
+  maxThread: 8, // 最大线程数
+};
+
 /**
  * 文件分片
  * @param file 选中的文件
@@ -34,8 +39,8 @@ export async function getArrayBufferFromBlob(
  * @returns {Promise<ArrayBuffer[]>}
  */
 export async function getArrayBufFromFile(file: File): Promise<ArrayBuffer[]> {
-  // 分片大小为1mb，不允许擅自修改分片大小，因为文件的md5不是通过校验整个文件得出，而是根据校验全部分片得出。改变分片大小，分片数量会发生变化导致分片后二次hash发生变化
-  const blobs = sliceFiles(file, 5);
+  // 分片大小为5mb，不允许擅自修改分片大小，因为文件的md5不是通过校验整个文件得出，而是根据校验全部分片得出。改变分片大小，分片数量会发生变化导致分片后二次hash发生变化
+  const blobs = sliceFiles(file, DEFAULT_UPLOADER_CONFIG.chunkSize);
   const arraybufs = await getArrayBufferFromBlob(blobs);
   return arraybufs;
 }
