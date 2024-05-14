@@ -35,7 +35,6 @@ export class PromisePool {
             tasks.forEach((taskWrap) => {
               const {fn, index} = taskWrap
               fn().then((resp) => {
-                console.log(resp)
                 this.results[index] = resp
               }).catch((err) => {
                 this.results[index] = err
