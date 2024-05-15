@@ -5,6 +5,8 @@ import LeftImg from "@/assets/left-icon.png";
 import CheckPswImg from "@/assets/check-psw.svg";
 import { SplitLine } from "@/components/SplitLine/SplitLine";
 import { useState } from "react";
+import { login } from "@/api/user";
+import { UserStruct } from "@/types/api/user";
 
 const Login = () => {
   const { t } = useTranslation();
@@ -22,11 +24,34 @@ const Login = () => {
   };
 
   const handlePasswordShow = () => {
-    setIsShowPwd(isShowPwd => !isShowPwd);
-  }
+    setIsShowPwd((isShowPwd) => !isShowPwd);
+  };
 
   const handleLoginBtnClick = () => {
+    // 去除账号两端的空格
+    const withoutSpaceAccount = account.trim();
+    if (withoutSpaceAccount.length === 0) {
+      alert("账号不能为空");
+      return;
+    }
+    if (password.length === 0) {
+      alert("密码不能为空");
+      return;
+    }
+    login(withoutSpaceAccount, password)
+      .then((res) => {
+        console.log(res);
+        const { accessToken } = res.data;
+        getUserLoginInfo(accessToken);
+      })
+      .catch((err) => {
+        console.log("login服务异常:", err);
+      });
+  };
 
+  // 获取用户登录信息
+  function getUserLoginToken(accessToken) {
+    
   }
 
   return (
@@ -72,19 +97,29 @@ const Login = () => {
                 />
               )}
               {password.length > 0 && (
-                <img onClick={handlePasswordShow} className={style["check-psw"]} src={CheckPswImg} alt="" />
+                <img
+                  onClick={handlePasswordShow}
+                  className={style["check-psw"]}
+                  src={CheckPswImg}
+                  alt=""
+                />
               )}
             </div>
             {/* 忘记密码 */}
             <div className={style["forget-pwd"]}>{t("forget-password")}</div>
             {/* 登陆按钮 */}
-            <button onClick={handleLoginBtnClick} className={style["login-btn"]}>{t("login")}</button>
+            <button
+              onClick={handleLoginBtnClick}
+              className={style["login-btn"]}
+            >
+              {t("login")}
+            </button>
             {/* 分割线 */}
             <div className={style["split-box"]}>
               <SplitLine>or</SplitLine>
             </div>
             {/* 切换注册页 */}
-            <div style={{fontSize: '14px'}}>
+            <div style={{ fontSize: "14px" }}>
               <span>{t("no-account")}</span>
               <span className={style["register-line"]}>{t("to-register")}</span>
             </div>

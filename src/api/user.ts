@@ -1,8 +1,8 @@
-import { MenuStruct } from "@/types/api/user"
+import { MenuStruct, UserStruct } from "@/types/api/user"
 import { service } from "../utils/customFetch"
 
 export const login = async (email: string, password: string) => {
-  return service.post('/v1/login', {email, password}).then((res) => {
+  return service.post<UserStruct>('/v1/login', {email, password}).then((res) => {
     return res
   })
 }

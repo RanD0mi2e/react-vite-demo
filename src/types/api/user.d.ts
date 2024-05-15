@@ -1,3 +1,7 @@
+export interface UserStruct {
+	accessToken: string;
+}
+
 export interface MenuStruct {
 	key: string;
 	label: string;
