@@ -1,0 +1,14 @@
+.split-wrapper {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 100%;
+  color: #919392;
+  font-size: 14px;
+}
+
+.split-line {
+  background-color: #d9d9d8;
+  flex: 1;
+  height: 2px;
+}
