@@ -1,0 +1,9 @@
+{
+  "login": "login",
+  "register": "register",
+  "no-account": "Are you new?",
+  "to-register": "Create an account",
+  "email-and-account": "Email or Account",
+  "password": "Password",
+  "forget-password": "Forget password?"
+}
