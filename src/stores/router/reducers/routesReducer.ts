@@ -16,7 +16,7 @@ const routesReducer: Reducer<routesState, routesAction> = (state, action) => {
     // 替换整个路由
     else if (action.type === 'replace') {
         // TODO
-        console.log('暂时不支持')
+        console.warn('暂时不支持')
     }
     return state
 }

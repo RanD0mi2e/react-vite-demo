@@ -6,10 +6,14 @@ import CheckPswImg from "@/assets/check-psw.svg";
 import { SplitLine } from "@/components/SplitLine/SplitLine";
 import { useState } from "react";
 import { login } from "@/api/user";
-import { UserStruct } from "@/types/api/user";
+import { useNavigate } from "react-router-dom";
+import { useUserInfo } from "@/stores/user/useUserInfo";
+import { UserActionTypes } from "@/stores/user/reducers/userReducer";
 
 const Login = () => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
+  const [userInfo, userInfoDispatch] = useUserInfo()
 
   const [account, setAccount] = useState("");
   const [password, setPassword] = useState("");
@@ -40,18 +44,23 @@ const Login = () => {
     }
     login(withoutSpaceAccount, password)
       .then((res) => {
-        console.log(res);
         const { accessToken } = res.data;
-        getUserLoginInfo(accessToken);
+        getUserLoginToken(accessToken);
+        // 跳转到首页
+        navigate("/dashboard");
       })
       .catch((err) => {
         console.log("login服务异常:", err);
       });
   };
 
-  // 获取用户登录信息
-  function getUserLoginToken(accessToken) {
-    
+  // 获取用户登录token
+  function getUserLoginToken(accessToken: string) {
+    localStorage.setItem("token", accessToken);
+    userInfoDispatch({
+      type: UserActionTypes.UPDATE_TOKEN,
+      token: accessToken,
+    })
   }
 
   return (

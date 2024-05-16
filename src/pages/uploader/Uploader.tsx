@@ -1,7 +1,7 @@
 import { PromisePool } from "@/utils/promise-pool/promisePool";
 import { getArrayBufFromFile } from "@/utils/uploaderHelpers";
-import { WorkerService } from "@/utils/worker/worker.service";
-import { ChangeEvent, useRef, useState } from "react";
+import { WorkerService } from "@/server/worker-service";
+import { ChangeEvent, useRef } from "react";
 
 const Uploader = () => {
   const workerSrv = useRef(new WorkerService());

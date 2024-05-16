@@ -18,7 +18,7 @@ type ResponseJson<T> = {
 type RequestInterceptor = Interceptor<FetchConfig>;
 type ResponseInterceptor = Interceptor<Response>;
 
-class Fetch {
+export class Fetch {
   protected BASE_URL = ''  // 基础路径
   protected TIME_OUT = 5000  // 请求最长等待时间
   private requestInterceptor: RequestInterceptor | null = null;
@@ -113,7 +113,55 @@ class Fetch {
   }
 }
 
-// 初始化Fetch实例
+interface fetchOptions {
+  baseUrl: string
+  timeout: number
+  requestInterceptor?: RequestInterceptor
+  responseInterceptor?: ResponseInterceptor
+}
+
+// fetch工厂函数
+export function fetchFactory(options: fetchOptions) {
+  const service = new Fetch()
+  // 基础路径
+  service.setBaseUrl(options.baseUrl)
+
+  // 等待时间
+  service.setTimeout(options.timeout)
+
+  // 请求拦截器
+  if (options.requestInterceptor) {
+    service.setRequestInterceptor(options.requestInterceptor)
+  }
+  // 响应拦截器
+  if (options.responseInterceptor) {
+    service.setResponseInterceptor(options.responseInterceptor)
+  }
+
+  return service
+}
+
+// 实例化一个http-fetch服务
+const httpSrv = fetchFactory({
+  baseUrl: import.meta.env.VITE_BASE_URL,
+  timeout: 10000,
+  requestInterceptor: (config) => {
+    // 获取token
+    const defaultConfig = {
+      headers: {
+        'Content-type': 'application/json;charset=UTF-8',
+        'Authorization': getToken()
+      },
+    }
+    return {...config, ...defaultConfig}
+  }
+})
+
+export {
+  httpSrv as service
+}
+
+/* // 初始化Fetch实例
 export const service = new Fetch()
 // 基础路径
 service.setBaseUrl(import.meta.env.VITE_BASE_URL)
@@ -128,4 +176,4 @@ const defaultConfig = {
 }
 service.setRequestInterceptor((config) => {
   return {...config, ...defaultConfig}
-})
+}) */
