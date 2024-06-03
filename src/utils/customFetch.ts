@@ -146,10 +146,10 @@ const httpSrv = fetchFactory({
   baseUrl: import.meta.env.VITE_BASE_URL,
   timeout: 10000,
   requestInterceptor: (config) => {
-    // 获取token
     const defaultConfig = {
       headers: {
         'Content-type': 'application/json;charset=UTF-8',
+        // 获取token
         'Authorization': getToken()
       },
     }
@@ -169,6 +169,7 @@ service.setBaseUrl(import.meta.env.VITE_BASE_URL)
 service.setTimeout(10000)
 // 注入请求头
 const defaultConfig = {
+  // 此处存在问题：实例化fetch时，getToken()函数获取的token是空的，login接口执行前这里就已经初始化了，拿不到最新的token；
   headers: {
     'Content-type': 'application/json;charset=UTF-8',
     'Authorization': getToken()
